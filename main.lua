@@ -25,7 +25,7 @@ function love.load()
 	local object_files = {}
 	recursiveEnumerate('objects', object_files)
 	requireFiles(object_files)
-	local circle = Circle(400, 300, 50)
+	local circle = HyperCircle(400, 300, 50, 10, 120)
 	table.insert(objects, circle)
 end
 
