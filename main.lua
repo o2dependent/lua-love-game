@@ -1,13 +1,14 @@
 Object = require "libs/rxi/classic"
 Input = require "libs/boipushy/Input"
 Timer = require "libs/chrono/Timer"
+UUID = require "utils/UUID"
 RequireAllFromFolder = require "utils/RequireAllFromFolder"
 
 
 local objects = {}
 
-hp = 100
-full_hp_width = 500
+local hp = 100
+local full_hp_width = 500
 
 function animate_hp(new_hp)
 	if hp_time_handler1 then timer:cancel(hp_time_handler1) end
@@ -20,6 +21,9 @@ function animate_hp(new_hp)
 end
 
 function love.load()
+	-- seed random
+	math.randomseed(os.time())
+
 	-- require all object
 	object_files = {}
 	RequireAllFromFolder("objects", object_files)
