@@ -1,7 +1,9 @@
-local recursiveEnumerate = require "utils/recursiveEnumerate"
-local requireFiles = require "utils/recursiveEnumerate"
+RecursiveEnumerate = require "utils/RecursiveEnumerate"
+RequireFiles = require "utils/RequireFiles"
 
-function requireAllFromFolder(folder, file_list)
-	recursiveEnumerate(folder, file_list)
-	requireFiles(file_list)
+function RequireAllFromFolder(folder, file_list)
+	RecursiveEnumerate(folder, file_list)
+	RequireFiles(file_list)
 end
+
+return RequireAllFromFolder
