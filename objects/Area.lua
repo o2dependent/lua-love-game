@@ -6,8 +6,12 @@ function Area:new(room)
 end
 
 function Area:update(dt)
-	for _, game_object in ipairs(self.game_objects) do
+	for i = #self.game_objects, 1, -1 do
+		local game_object = self.game_objects[i]
 		game_object:update(dt)
+		if game_object.dead then
+			table.remove(self.game_objects, i)
+		end
 	end
 end
 
@@ -16,3 +20,11 @@ function Area:draw()
 		game_object:draw()
 	end
 end
+
+function Area:addGameObject(game_object_type, x, y, opts)
+	local opts = opts or {}
+	local game_object = _G[game_object_type](self, x, y, opts)
+	table.insert(self.game_objects, game_object)
+	return game_object
+end
+
