@@ -1,11 +1,5 @@
 Object = require "libs/rxi/classic"
 
-function love.load()
-	local object_files = {}
-	recursiveEnumerate('objects', object_files)
-	requireFiles(object_files)
-end
-
 function recursiveEnumerate(folder, file_list)
 	local items = love.filesystem.getDirectoryItems(folder)
 	for _, item in ipairs(items) do
@@ -25,11 +19,24 @@ function requireFiles(files)
 	end
 end
 
-function love.update(dt)
+local objects = {}
 
+function love.load()
+	local object_files = {}
+	recursiveEnumerate('objects', object_files)
+	requireFiles(object_files)
+	local circle = Circle(400, 300, 50)
+	table.insert(objects, circle)
+end
+
+function love.update(dt)
 end
 
 function love.draw()
-
+	for _, object in ipairs(objects) do
+		if object.draw then
+			object:draw()
+		end
+	end
 end
 
