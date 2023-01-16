@@ -6,5 +6,5 @@ end
 
 function CircleRoom:draw()
 	love.graphics.setColor(255, 255, 255)
-	love.graphics.circle("fill", 400, 300, 200)
+	love.graphics.circle("line", gw/2, gh/2, gh/4)
 end
