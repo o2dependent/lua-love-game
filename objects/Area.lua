@@ -5,7 +5,13 @@ function Area:new(room)
 	self.game_objects = {}
 end
 
+function Area:addPhysicsWorld()
+	self.world = Physics.newWorld(0, 0, true)
+end
+
 function Area:update(dt)
+	if self.world then self.world:update(dt) end
+
 	for i = #self.game_objects, 1, -1 do
 		local game_object = self.game_objects[i]
 		game_object:update(dt)
@@ -16,6 +22,8 @@ function Area:update(dt)
 end
 
 function Area:draw()
+	if self.world then self.world:draw() end
+
 	for _, game_object in ipairs(self.game_objects) do
 		game_object:draw()
 	end
