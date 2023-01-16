@@ -1,3 +1,5 @@
+UUID = require "utils/UUID"
+
 GameObject = Object:extend()
 
 function GameObject:new(area, x, y, opts)

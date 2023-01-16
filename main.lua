@@ -1,3 +1,4 @@
+require "libs/windfield/init"
 Object = require "libs/rxi/classic"
 Input = require "libs/boipushy/Input"
 Timer = require "libs/chrono/Timer"
@@ -11,6 +12,7 @@ function resize(s)
 end
 
 local objects = {}
+input = nil
 
 rooms = {}
 
