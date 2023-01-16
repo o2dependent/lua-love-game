@@ -3,24 +3,22 @@ Input = require "libs/boipushy/Input"
 Timer = require "libs/chrono/Timer"
 UUID = require "utils/UUID"
 RequireAllFromFolder = require "utils/RequireAllFromFolder"
+Camera = require "libs/a327ex/Camera"
 
+function resize(s)
+	love.window.setMode(s*gw, s*gh)
+	sx, sy = s, s
+end
 
 local objects = {}
 
-local hp = 100
-local full_hp_width = 500
-
-function animate_hp(new_hp)
-	if hp_time_handler1 then timer:cancel(hp_time_handler1) end
-	if hp_time_handler2 then timer:cancel(hp_time_handler2) end
-
-	new_hp_width = new_hp / 100 * full_hp_width
-
-	hp_time_handler1 = timer:tween(0.5, hp_rect_1, {w = new_hp_width}, "in-out-cubic")
-	hp_time_handler2 = timer:tween(1, hp_rect_2, {w = new_hp_width}, "in-out-cubic")
-end
+rooms = {}
 
 function love.load()
+	-- apply astectic settings
+	resize(3)
+	love.graphics.setDefaultFilter("nearest", "nearest")
+
 	-- seed random
 	math.randomseed(os.time())
 
@@ -28,47 +26,32 @@ function love.load()
 	object_files = {}
 	RequireAllFromFolder("objects", object_files)
 
+
 	-- create input listener and timer
 	input = Input()
 	timer = Timer()
 
 	-- initialize rooms and current room var
-	rooms = {CircleRoom = CircleRoom(), RectangleRoom = RectangleRoom(), PolygonRoom = PolygonRoom()}
-	current_room = rooms["CircleRoom"]
+	RequireAllFromFolder("rooms", rooms)
+	current_room = Stage()
 
-	input:bind('1', function() gotoRoom(CircleRoom, 'CircleRoom') end)
-	input:bind('2', function() gotoRoom(RectangleRoom, 'RectangleRoom') end)
-	input:bind('3', function() gotoRoom(PolygonRoom, 'PolygonRoom') end)
-
-	-- health bar init functions
-	input:bind('d', function()
-		if hp > 0 then
-			hp = hp - 10
-		else
-			hp = 100
-		end
-		animate_hp(hp)
-	end)
-
-	hp_rect_1 = {x = 400, y = 300, w = full_hp_width, h = 50}
-	hp_rect_2 = {x = 400, y = 300, w = full_hp_width, h = 50}
+	-- setup camera
+	camera = Camera()
 end
 
 function love.update(dt)
 	-- keep timer up to date
 	timer:update(dt)
 
+	-- update camera
+	camera:update(dt)
+	input:bind('f3', function() camera:shake(4, 1, 60) end)
+
 	-- update room if it exists
 	if current_room then current_room:update(dt) end
 end
 
 function love.draw()
-	-- draw health bar
-	-- love.graphics.setColor(255, 0, 0, 1)
-	-- love.graphics.rectangle('fill', hp_rect_1.x - full_hp_width/2, hp_rect_1.y - hp_rect_1.h/2, hp_rect_1.w, hp_rect_1.h)
-	-- love.graphics.setColor(255, 0, 0, 0.5)
-	-- love.graphics.rectangle('fill', hp_rect_2.x - full_hp_width/2, hp_rect_2.y - hp_rect_2.h/2, hp_rect_2.w, hp_rect_2.h)
-
 	-- draw room if it exists
 	if current_room then current_room:draw() end
 end
