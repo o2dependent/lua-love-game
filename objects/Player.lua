@@ -35,5 +35,12 @@ function Player:draw()
 end
 
 function Player:shoot()
-	self.area:addGameObject('ShootEffect', self.x + 1.2*self.w*math.cos(self.r), self.y + 1.2*self.w*math.sin(self.r))
+	local d = 1.2*self.w
+
+	self.area:addGameObject(
+		'ShootEffect',
+		self.x + d*math.cos(self.r),
+		self.y + d*math.sin(self.r),
+		{player = self, d = d}
+	)
 end
