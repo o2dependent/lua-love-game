@@ -25,13 +25,16 @@ function love.load()
 	math.randomseed(os.time())
 
 	-- require all object
-	object_files = {}
-	RequireAllFromFolder("objects", object_files)
+	RequireAllFromFolder("objects", objects)
 
 
 	-- create input listener and timer
 	input = Input()
 	timer = Timer()
+
+	-- setup input bindings
+	input:bind('left', 'left')
+	input:bind('right', 'right')
 
 	-- initialize rooms and current room var
 	RequireAllFromFolder("rooms", rooms)
