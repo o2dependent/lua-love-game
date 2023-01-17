@@ -32,6 +32,17 @@ function love.load()
 	input = Input()
 	timer = Timer()
 
+	-- DEBUG -- bind f1 to print garbage
+	input:bind('f1', function()
+		print("Before collection: " .. collectgarbage("count")/1024)
+		collectgarbage()
+		print("After collection: " .. collectgarbage("count")/1024)
+		print("Object count: ")
+		local counts = type_count()
+		for k, v in pairs(counts) do print(k, v) end
+		print("-------------------------------------")
+	end)
+
 	-- setup input bindings
 	input:bind('left', 'left')
 	input:bind('right', 'right')
@@ -67,13 +78,47 @@ function addRoom(room_type, room_name, ...)
 	return room
 end
 
-function gotoRoom(room_type, room_name, ...)
-	if current_room and rooms[room_name] then
-		if current_room.deactivate then current_room:deactivate() end
-		current_room = rooms[room_name]
-		if current_room.activate then current_room:activate() end
-	else
-		current_room = addRoom(room_type, room_name, ...)
-	end
+function gotoRoom(room_type, ...)
+	if current_room and current_room.destroy then current_room:destroy() end
+	current_room = _G[room_type](...)
 end
 
+function count_all(f)
+	local seen = {}
+	local count_table
+	count_table = function(t)
+			if seen[t] then return end
+					f(t)
+		seen[t] = true
+		for k,v in pairs(t) do
+				if type(v) == "table" then
+			count_table(v)
+				elseif type(v) == "userdata" then
+			f(v)
+				end
+end
+	end
+	count_table(_G)
+end
+
+function type_count()
+	local counts = {}
+	local enumerate = function (o)
+			local t = type_name(o)
+			counts[t] = (counts[t] or 0) + 1
+	end
+	count_all(enumerate)
+	return counts
+end
+
+global_type_table = nil
+function type_name(o)
+	if global_type_table == nil then
+			global_type_table = {}
+					for k,v in pairs(_G) do
+				global_type_table[v] = k
+		end
+global_type_table[0] = "table"
+	end
+	return global_type_table[getmetatable(o) or 0] or "Unknown"
+end
