@@ -13,6 +13,10 @@ function Player:new(area, x, y, opts)
 	self.v = 0 -- velocity
 	self.max_v = 100 -- max velocity
 	self.a = 100 -- acceleration
+
+	timer:every(0.24, function()
+		self:shoot()
+	end)
 end
 
 function Player:update(dt)
@@ -28,4 +32,8 @@ end
 function Player:draw()
 	love.graphics.circle('line', self.x, self.y, self.w)
 	love.graphics.line(self.x, self.y, self.x + self.w*2*math.cos(self.r), self.y + self.w*2*math.sin(self.r))
+end
+
+function Player:shoot()
+	self.area:addGameObject('ShootEffect', self.x + 1.2*self.w*math.cos(self.r), self.y + 1.2*self.w*math.sin(self.r))
 end
