@@ -14,8 +14,15 @@ function Player:new(area, x, y, opts)
 	self.max_v = 100 -- max velocity
 	self.a = 100 -- acceleration
 
-	timer:every(0.24, function()
+	self.attack_speed = 1
+
+	self:attackLoop()
+end
+
+function Player:attackLoop()
+	timer:after(0.24 * self.attack_speed, function()
 		self:shoot()
+		self:attackLoop()
 	end)
 end
 

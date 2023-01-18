@@ -7,6 +7,7 @@ UUID = require "utils/UUID"
 RequireAllFromFolder = require "utils/RequireAllFromFolder"
 require "utils/pushRotate"
 require "utils/pushRotateScale"
+require "utils/random"
 
 function resize(s)
 	love.window.setMode(s*gw, s*gh)
