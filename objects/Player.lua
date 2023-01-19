@@ -20,7 +20,7 @@ function Player:new(area, x, y, opts)
 end
 
 function Player:attackLoop()
-	timer:after(0.24 * self.attack_speed, function()
+	timer:after(0.12 * self.attack_speed, function()
 		self:shoot()
 		self:attackLoop()
 	end)
@@ -37,8 +37,9 @@ function Player:update(dt)
 end
 
 function Player:draw()
+	love.graphics.setColor(241, 103, 69)
 	love.graphics.circle('line', self.x, self.y, self.w)
-	love.graphics.line(self.x, self.y, self.x + self.w*2*math.cos(self.r), self.y + self.w*2*math.sin(self.r))
+	-- love.graphics.line(self.x, self.y, self.x + self.w*2*math.cos(self.r), self.y + self.w*2*math.sin(self.r))
 end
 
 function Player:shoot()
@@ -55,7 +56,29 @@ function Player:shoot()
 		self.x + 1.5*d*math.cos(self.r),
 		self.y + 1.5*d*math.sin(self.r),
 		{
-			r = self.r
+			r = self.r,
+			s = 2.5,
+			v = 200
 		}
 	)
+	-- self.area:addGameObject(
+	-- 	'Projectile',
+	-- 	self.x + 1.8*d*math.cos(self.r + math.pi/4),
+	-- 	self.y + 1.8*d*math.sin(self.r + math.pi/4),
+	-- 	{
+	-- 		r = self.r,
+	-- 		s = 2.5,
+	-- 		v = 200
+	-- 	}
+	-- )
+	-- self.area:addGameObject(
+	-- 	'Projectile',
+	-- 	self.x + 1.8*d*math.cos(self.r - math.pi/4),
+	-- 	self.y + 1.8*d*math.sin(self.r - math.pi/4),
+	-- 	{
+	-- 		r = self.r,
+	-- 		s = 2.5,
+	-- 		v = 200
+	-- 	}
+	-- )
 end

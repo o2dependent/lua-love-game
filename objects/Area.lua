@@ -23,7 +23,7 @@ function Area:update(dt)
 end
 
 function Area:draw()
-	if self.world then self.world:draw() end
+	-- if self.world then self.world:draw() end
 
 	for _, game_object in ipairs(self.game_objects) do
 		game_object:draw()

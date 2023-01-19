@@ -1,3 +1,7 @@
+require("globals")
+require("utils/pushRotate")
+require("utils/pushRotateScale")
+require("utils/random")
 Physics = require "libs/windfield/init"
 Object = require "libs/rxi/classic"
 Input = require "libs/boipushy/Input"
@@ -5,9 +9,6 @@ Timer = require "libs/chrono/Timer"
 Camera = require "libs/a327ex/Camera"
 UUID = require "utils/UUID"
 RequireAllFromFolder = require "utils/RequireAllFromFolder"
-require "utils/pushRotate"
-require "utils/pushRotateScale"
-require "utils/random"
 
 function resize(s)
 	love.window.setMode(s*gw, s*gh)
