@@ -1,14 +1,15 @@
-require("globals")
-require("utils/pushRotate")
-require("utils/pushRotateScale")
-require("utils/random")
 Physics = require "libs/windfield/init"
 Object = require "libs/rxi/classic"
 Input = require "libs/boipushy/Input"
-Timer = require "libs/chrono/Timer"
+Timer = require "libs/enhanced_timer/EnhancedTimer"
 Camera = require "libs/a327ex/Camera"
 UUID = require "utils/UUID"
 RequireAllFromFolder = require "utils/RequireAllFromFolder"
+require("globals")
+require("GameObject")
+require("utils/pushRotate")
+require("utils/pushRotateScale")
+require("utils/random")
 
 function resize(s)
 	love.window.setMode(s*gw, s*gh)
@@ -17,6 +18,7 @@ end
 
 local objects = {}
 input = nil
+slow_amount = 1
 
 rooms = {}
 
@@ -31,6 +33,7 @@ function love.load()
 	-- require all object
 	RequireAllFromFolder("objects", objects)
 
+	slow_amount = 1
 
 	-- create input listener and timer
 	input = Input()
@@ -61,19 +64,31 @@ end
 
 function love.update(dt)
 	-- keep timer up to date
-	timer:update(dt)
+	timer:update(dt * slow_amount)
 
 	-- update camera
-	camera:update(dt)
+	camera:update(dt * slow_amount)
 	input:bind('f3', function() camera:shake(4, 1, 60) end)
 
 	-- update room if it exists
-	if current_room then current_room:update(dt) end
+	if current_room then current_room:update(dt * slow_amount) end
 end
 
 function love.draw()
 	-- draw room if it exists
 	if current_room then current_room:draw() end
+
+
+	if flash_frames then
+		flash_frames = flash_frames - 1
+		if flash_frames == -1 then flash_frames = nil end
+	end
+	if flash_frames then
+		love.graphics.setColor(background_color)
+		love.graphics.rectangle('fill', 0, 0, sx*gw, sy*gh)
+		love.graphics.setColor(default_color)
+	end
+
 end
 
 function addRoom(room_type, room_name, ...)
@@ -126,3 +141,19 @@ global_type_table[0] = "table"
 	end
 	return global_type_table[getmetatable(o) or 0] or "Unknown"
 end
+
+
+---- effects
+-- slow down time
+function slow(amount, duration)
+	slow_amount = amount
+	timer:tween('slow', duration, _G, {slow_amount = 1}, 'in-out-cubic')
+end
+
+-- flash background
+flash_frames = nil
+function flash(frames)
+	flash_frames = frames
+end
+
+
