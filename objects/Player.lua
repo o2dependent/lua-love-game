@@ -3,22 +3,44 @@ Player = GameObject:extend()
 function Player:new(area, x, y, opts)
 	Player.super.new(self, area, x, y, opts)
 
+	-- set position
 	self.x, self.y = x, y
 	self.w, self.h = 12, 12
-	self.collider = self.area.world:newCircleCollider(self.x, self.y, self.w)
-	self.collider:setObject(self)
 
+	-- create new collider for player
+	self.collider = self.area.world:newCircleCollider(self.x, self.y, self.w)
+	self.collider:setObject(self) -- bind collider to player
+
+	-- set other options
 	self.r = -math.pi/2 -- player rotation
 	self.rv = 1.66 * math.pi -- rotation velocity
 	self.v = 0 -- velocity
-	self.max_v = 100 -- max velocity
+	self.base_max_v = 100 -- base level max velocity
+	self.max_v = self.base_max_v -- current max velocity
 	self.a = 100 -- acceleration
+	self.attack_speed = 1 -- attack speed multiplier
 
-	self.attack_speed = 1
-
+	-- start attack loop
 	self:attackLoop()
 
+	-- start tick loop
 	self.timer:every(5, function() self:tick() end)
+
+	-- boost trail
+	self.boosting = false
+	self.trail_color = skill_point_color
+	self.timer:every(0.02, function ()
+		self.area:addGameObject(
+			'TrailParticle',
+			self.x - self.w*math.cos(self.r), -- x position
+			self.y - self.h*math.sin(self.r), -- y position
+			{
+				r = self.w / 3, -- radius
+				d = 0.2, -- duration
+				color = self.trail_color -- color
+			}
+		)
+	end)
 end
 
 function Player:tick()
@@ -26,9 +48,12 @@ function Player:tick()
 end
 
 function Player:attackLoop()
+	-- don't shoot if player is dead
 	if self.dead then return end
 	timer:after(0.12 * self.attack_speed, function()
-		self:shoot()
+		if input:down('space') then
+			self:shoot()
+		end
 		self:attackLoop()
 	end)
 end
@@ -36,9 +61,31 @@ end
 function Player:update(dt)
 	Player.super.update(self, dt)
 
-	if input:down('left') then self.r = self.r - self.rv*dt end
-	if input:down('right') then self.r = self.r + self.rv*dt end
+	-- reset max velocity
+	self.max_v = self.base_max_v
+	self.boosting = false
 
+	-- check inputs for velocity and rotation changes
+	if input:down('up') then
+		self.max_v = 1.5*self.base_max_v
+		self.boosting = true
+	end
+	if input:down('down') then
+		self.max_v = 0.5*self.base_max_v
+		self.boosting = true
+	end
+	if input:down('left') then
+		self.r = self.r - self.rv*dt
+	end
+	if input:down('right') then
+		self.r = self.r + self.rv*dt
+	end
+
+	-- update trail color
+	self.trail_color = skill_point_color
+	if self.boosting then self.trail_color = boost_color end
+
+	-- update position and velocity
 	self.v = math.min(self.v + self.a*dt, self.max_v)
 	self.collider:setLinearVelocity(self.v*math.cos(self.r), self.v*math.sin(self.r))
 
@@ -47,11 +94,13 @@ function Player:update(dt)
 end
 
 function Player:draw()
-	-- if player is close to the edge of the screen, draw a line to the center
-	if self.x < self.r or self.x > gw - self.r or self.y < self.r or self.y > gh - self.r then
+	-- TESTING: if player is close to the edge of the screen, draw a line to the center
+	if self.x < self.w + self.h or self.x > gw - self.w - self.h or self.y < self.w + self.h or self.y > gh - self.w - self.h then
 		love.graphics.setColor(default_color)
 		love.graphics.line(self.x, self.y, gw/2, gh/2)
 	end
+
+	-- draw ship
 	love.graphics.setColor(default_color)
 	love.graphics.circle('line', self.x, self.y, self.w)
 	-- love.graphics.line(self.x, self.y, self.x + self.w*2*math.cos(self.r), self.y + self.w*2*math.sin(self.r))

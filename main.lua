@@ -53,6 +53,9 @@ function love.load()
 	-- setup input bindings
 	input:bind('left', 'left')
 	input:bind('right', 'right')
+	input:bind('up', 'up')
+	input:bind('down', 'down')
+	input:bind('space', 'space')
 
 	-- initialize rooms and current room var
 	RequireAllFromFolder("rooms", rooms)

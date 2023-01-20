@@ -9,8 +9,6 @@ function ExplodeParticle:new(area, x, y, opts)
 	self.v = opts.v or random(75, 150)
 	self.line_width = 2
 
-	print(self.r)
-
 	timer:tween(
 		opts.d or random(0.3, 0.5),
 		self,
