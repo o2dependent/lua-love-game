@@ -18,8 +18,11 @@ function Player:new(area, x, y, opts)
 
 	self:attackLoop()
 
-	-- TESTING PLAYER KILL
-	input:bind('f4', function () self:die() end)
+	self.timer:every(5, function() self:tick() end)
+end
+
+function Player:tick()
+	self.area:addGameObject('TickEffect', self.x, self.y, {parent = self})
 end
 
 function Player:attackLoop()
