@@ -1,5 +1,5 @@
 --[[
-Copyright (c) 2018 SSYGEN, Matthias Richter
+Copyright (c) 2018 SSYGEN
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -10,10 +10,6 @@ furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
-
-Except as contained in this notice, the name(s) of the above copyright holders
-shall not be used in advertising or otherwise to promote the sale, use or
-other dealings in this Software without prior written authorization.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -46,7 +42,7 @@ function Timer:update(dt)
         elseif timer.type == 'every' then
             if timer.time >= timer.delay then
                 timer.action()
-                timer.time = timer.time - timer.delay
+                timer.time = 0
                 timer.delay = self:__getResolvedDelay(timer.any_delay)
                 if timer.count > 0 then
                     timer.counter = timer.counter + 1
@@ -173,8 +169,8 @@ function Timer:__tween(method, ...)
     if method == 'linear' then return t.linear(...)
     elseif method:find('in%-out%-') then return t.chain(t[method:sub(8, -1)], t.out(t[method:sub(8, -1)]))(...)
     elseif method:find('out%-in%-') then return t.chain(t.out(t[method:sub(8, -1)]), t[method:sub(8, -1)])(...)
-    elseif method:find('out%-') then return t.out(t[method:sub(5, -1)])(...)
-    elseif method:find('in%-') then return t[method:sub(4, -1)](...) end
+    elseif method:find('out-') then return t.out(t[method:sub(5, -1)])(...)
+    elseif method:find('in-') then return t[method:sub(4, -1)](...) end
 end
 
 function Timer:__tweenCollectPayload(subject, target, out)
