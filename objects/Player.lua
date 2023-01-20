@@ -17,9 +17,13 @@ function Player:new(area, x, y, opts)
 	self.attack_speed = 1
 
 	self:attackLoop()
+
+	-- TESTING PLAYER KILL
+	input:bind('f4', function () self:die() end)
 end
 
 function Player:attackLoop()
+	if self.dead then return end
 	timer:after(0.12 * self.attack_speed, function()
 		self:shoot()
 		self:attackLoop()
@@ -34,10 +38,18 @@ function Player:update(dt)
 
 	self.v = math.min(self.v + self.a*dt, self.max_v)
 	self.collider:setLinearVelocity(self.v*math.cos(self.r), self.v*math.sin(self.r))
+
+	-- player dies if they go off screen
+	if self.x < 0 or self.x > gw or self.y < 0 or self.y > gh then self:die() end
 end
 
 function Player:draw()
-	love.graphics.setColor(241, 103, 69)
+	-- if player is close to the edge of the screen, draw a line to the center
+	if self.x < self.r or self.x > gw - self.r or self.y < self.r or self.y > gh - self.r then
+		love.graphics.setColor(default_color)
+		love.graphics.line(self.x, self.y, gw/2, gh/2)
+	end
+	love.graphics.setColor(default_color)
 	love.graphics.circle('line', self.x, self.y, self.w)
 	-- love.graphics.line(self.x, self.y, self.x + self.w*2*math.cos(self.r), self.y + self.w*2*math.sin(self.r))
 end
@@ -81,4 +93,19 @@ function Player:shoot()
 	-- 		v = 200
 	-- 	}
 	-- )
+end
+
+function Player:die()
+	slow(0.15, 1)
+	flash(4)
+	camera:shake(6, 60, 0.4)
+	self.dead = true
+
+	for i = 1, love.math.random(8, 16) do
+		self.area:addGameObject(
+			'ExplodeParticle',
+			self.x,
+			self.y
+		)
+	end
 end
