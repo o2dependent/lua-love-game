@@ -1,3 +1,4 @@
+
 Player = GameObject:extend()
 
 function Player:new(area, x, y, opts)
@@ -26,21 +27,18 @@ function Player:new(area, x, y, opts)
 	-- start tick loop
 	self.timer:every(5, function() self:tick() end)
 
+	-- set up ship
+	self.ship = Fighter(self.area, self)
+	input:bind('f5', function() self.ship = Fighter(self.area, self) end)
+	input:bind('f6', function() self.ship = Scorpion(self.area, self) end)
+
 	-- boost trail
 	self.boosting = false
 	self.trail_color = skill_point_color
 	self.timer:every(0.02, function ()
-		self.area:addGameObject(
-			'TrailParticle',
-			self.x - self.w*math.cos(self.r), -- x position
-			self.y - self.h*math.sin(self.r), -- y position
-			{
-				r = self.w / 3, -- radius
-				d = 0.2, -- duration
-				color = self.trail_color -- color
-			}
-		)
+		self.ship:trail()
 	end)
+
 end
 
 function Player:tick()
@@ -101,9 +99,21 @@ function Player:draw()
 	end
 
 	-- draw ship
-	love.graphics.setColor(default_color)
-	love.graphics.circle('line', self.x, self.y, self.w)
-	-- love.graphics.line(self.x, self.y, self.x + self.w*2*math.cos(self.r), self.y + self.w*2*math.sin(self.r))
+	self.ship:draw()
+	-- pushRotate(self.x, self.y, self.r)
+	-- love.graphics.setColor(default_color)
+	-- for _, polygon in ipairs(self.polygons) do
+	-- 		local points = M.map(polygon, function(v, k)
+	-- 			if k % 2 == 1 then
+	-- 					return self.x + v + random(-1, 1)
+	-- 			else
+	-- 					return self.y + v + random(-1, 1)
+	-- 			end
+	-- 		end)
+
+	-- 		love.graphics.polygon('line', points)
+	-- end
+	-- love.graphics.pop()
 end
 
 function Player:shoot()

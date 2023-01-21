@@ -5,6 +5,7 @@ Timer = require "libs/enhanced_timer/EnhancedTimer"
 Camera = require "libs/a327ex/Camera"
 UUID = require "utils/UUID"
 RequireAllFromFolder = require "utils/RequireAllFromFolder"
+M = require "libs.Moses.moses"
 require("globals")
 require("GameObject")
 require("utils/pushRotate")
