@@ -5,6 +5,7 @@ function TickEffect:new(area, x, y, opts)
 
 	-- position
 	self.w, self.h = 48, 32
+	self.depth = 100
 
 	-- y offset to anchor the effect to the top of the player
 	self.y_offset = 0
