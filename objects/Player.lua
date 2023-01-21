@@ -34,6 +34,11 @@ function Player:new(area, x, y, opts)
 
 	-- boost trail
 	self.boosting = false
+	self.max_boost = 100
+	self.boost = self.max_boost
+	self.can_boost = true
+	self.boost_timer = 0
+	self.boost_cooldown = 2
 	self.trail_color = skill_point_color
 	self.timer:every(0.02, function ()
 		self.ship:trail()
@@ -57,20 +62,43 @@ function Player:attackLoop()
 end
 
 function Player:update(dt)
+	-- dt = delta time between frames
+	-- multiply "per second" values by dt to get "per frame" values
+	-- this keeps increase/decrease of values between frames consistent
+
 	Player.super.update(self, dt)
+
+	-- set boost
+	self.boost = math.min(self.boost + 10*dt, self.max_boost)
+	self.boost_timer = self.boost_timer + dt
+	if self.boost_timer > self.boost_cooldown then
+		self.can_boost = true
+	end
+	self.boosting = false
 
 	-- reset max velocity
 	self.max_v = self.base_max_v
-	self.boosting = false
 
 	-- check inputs for velocity and rotation changes
-	if input:down('up') then
+	if input:down('up') and self.boost > 1 and self.can_boost then
+		self.boosting = true
 		self.max_v = 1.5*self.base_max_v
-		self.boosting = true
+		self.boost = self.boost - 50*dt -- reduce by 50 per second
+		if self.boost <= 1 then
+			self.boosting = false
+			self.can_boost = false
+			self.boost_timer = 0
+		end
 	end
-	if input:down('down') then
-		self.max_v = 0.5*self.base_max_v
+	if input:down('down') and self.boost > 1 and self.can_boost then
 		self.boosting = true
+		self.max_v = 0.5*self.base_max_v
+		self.boost = self.boost - 50*dt -- reduce by 50 per second
+		if self.boost <= 1 then
+			self.boosting = false
+			self.can_boost = false
+			self.boost_timer = 0
+		end
 	end
 	if input:down('left') then
 		self.r = self.r - self.rv*dt
