@@ -11,6 +11,7 @@ function Player:new(area, x, y, opts)
 	-- create new collider for player
 	self.collider = self.area.world:newCircleCollider(self.x, self.y, self.w)
 	self.collider:setObject(self) -- bind collider to player
+	self.collider:setCollisionClass('Player')
 
 	-- set other options
 	self.r = -math.pi/2 -- player rotation
@@ -44,6 +45,13 @@ function Player:new(area, x, y, opts)
 		self.ship:trail()
 	end)
 
+	-- player hp
+	self.max_hp = 100
+	self.hp = self.max_hp
+
+	-- ammo
+	self.max_ammo = 100
+	self.ammo = self.max_ammo
 end
 
 function Player:tick()
@@ -54,8 +62,9 @@ function Player:attackLoop()
 	-- don't shoot if player is dead
 	if self.dead then return end
 	timer:after(0.12 * self.attack_speed, function()
-		if input:down('space') then
+		if input:down('space') and self.ammo > 0 then
 			self:shoot()
+			self.ammo = math.max(0, self.ammo - 1)
 		end
 		self:attackLoop()
 	end)
@@ -106,7 +115,6 @@ function Player:update(dt)
 	if input:down('right') then
 		self.r = self.r + self.rv*dt
 	end
-
 	-- update trail color
 	self.trail_color = skill_point_color
 	if self.boosting then self.trail_color = boost_color end
@@ -117,6 +125,14 @@ function Player:update(dt)
 
 	-- player dies if they go off screen
 	if self.x < 0 or self.x > gw or self.y < 0 or self.y > gh then self:die() end
+
+	if self.collider:enter('Consumables') then
+		local collision_data = self.collider:getEnterCollisionData('Consumables')
+		local object = collision_data.collider:getObject()
+		if object:is(Ammo) then
+			object:die()
+		end
+	end
 end
 
 function Player:draw()
@@ -128,20 +144,15 @@ function Player:draw()
 
 	-- draw ship
 	self.ship:draw()
-	-- pushRotate(self.x, self.y, self.r)
-	-- love.graphics.setColor(default_color)
-	-- for _, polygon in ipairs(self.polygons) do
-	-- 		local points = M.map(polygon, function(v, k)
-	-- 			if k % 2 == 1 then
-	-- 					return self.x + v + random(-1, 1)
-	-- 			else
-	-- 					return self.y + v + random(-1, 1)
-	-- 			end
-	-- 		end)
 
-	-- 		love.graphics.polygon('line', points)
-	-- end
-	-- love.graphics.pop()
+	-- TESTING draw boost bar
+	local color1 = boost_color
+	local color2 = self.trail_color
+	if self.boosting then color1, color2 = color2, color1 end
+	love.graphics.setColor(tweenColors(color1,
+	color2, self.v/self.base_max_v))
+	love.graphics.rectangle('fill', 10, 10, self.boost, 5)
+
 end
 
 function Player:shoot()
@@ -199,3 +210,8 @@ function Player:die()
 		)
 	end
 end
+
+function Player:addAmmo(amount)
+	self.ammo = math.min(self.ammo + amount, self.max_ammo)
+end
+

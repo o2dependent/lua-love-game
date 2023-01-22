@@ -3,6 +3,8 @@ Object = require "libs/rxi/classic"
 Input = require "libs/boipushy/Input"
 Timer = require "libs/enhanced_timer/EnhancedTimer"
 Camera = require "libs/a327ex/Camera"
+Vector = require "libs/hump/vector"
+Draft = require "libs/draft/draft"
 UUID = require "utils/UUID"
 RequireAllFromFolder = require "utils/RequireAllFromFolder"
 M = require "libs.Moses.moses"
@@ -11,6 +13,8 @@ require("GameObject")
 require("utils/pushRotate")
 require("utils/pushRotateScale")
 require("utils/random")
+
+draft = Draft()
 
 function resize(s)
 	love.window.setMode(s*gw, s*gh)
