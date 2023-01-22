@@ -10,6 +10,15 @@ function color255To1(color)
 	return {color[1]/255, color[2]/255, color[3]/255}
 end
 
+-- get percentage between two colors
+function tweenColors(color1, color2, percent)
+	return {
+		color1[1] + (color2[1] - color1[1])*percent,
+		color1[2] + (color2[2] - color1[2])*percent,
+		color1[3] + (color2[3] - color1[3])*percent
+	}
+end
+
 default_color = color255To1(default_color)
 background_color = color255To1(background_color)
 ammo_color = color255To1(ammo_color)
