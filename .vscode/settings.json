@@ -1,5 +1,5 @@
 {
 	"Lua.runtime.version": "LuaJIT",
 	"Lua.workspace.library": ["${3rd}/love2d/library"],
-	"Lua.diagnostics.globals": ["input", "timer", "slow_amount"]
+	"Lua.diagnostics.globals": ["input", "timer", "slow_amount", "draft"]
 }
