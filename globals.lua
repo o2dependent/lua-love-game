@@ -1,3 +1,7 @@
+-- skill points (TEMP GLOBAL)
+skill_points = 0
+
+-- colors
 default_color = {222, 222, 222}
 background_color = {16, 16, 16}
 ammo_color = {123, 200, 164}

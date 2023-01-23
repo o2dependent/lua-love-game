@@ -224,3 +224,6 @@ function Player:addHp(amount)
 	self.hp = math.min(self.hp + amount, self.max_hp)
 end
 
+function Player:addSkillPoint(amount)
+	skill_points = skill_points + amount
+end
