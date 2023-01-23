@@ -3,6 +3,7 @@ Object = require "libs/rxi/classic"
 Input = require "libs/boipushy/Input"
 Timer = require "libs/enhanced_timer/EnhancedTimer"
 Camera = require "libs/a327ex/Camera"
+UTF8 = require "libs/utf8/utf8"
 Vector = require "libs/hump/vector"
 Draft = require "libs/draft/draft"
 UUID = require "utils/UUID"
@@ -13,6 +14,7 @@ require("GameObject")
 require("utils/pushRotate")
 require("utils/pushRotateScale")
 require("utils/random")
+require("utils/tableRandom")
 
 draft = Draft()
 
@@ -22,6 +24,7 @@ function resize(s)
 end
 
 local objects = {}
+fonts = {}
 input = nil
 slow_amount = 1
 
@@ -37,6 +40,9 @@ function love.load()
 
 	-- require all object
 	RequireAllFromFolder("objects", objects)
+
+	-- load fonts
+	fonts['m5x7_16'] = love.graphics.newFont("resourses/fonts/m5x7.ttf", 16)
 
 	slow_amount = 1
 
