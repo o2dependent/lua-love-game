@@ -129,7 +129,7 @@ function Player:update(dt)
 	if self.collider:enter('Consumables') then
 		local collision_data = self.collider:getEnterCollisionData('Consumables')
 		local object = collision_data.collider:getObject()
-		if object:is(Ammo) then
+		if object and object.die then
 			object:die()
 		end
 	end
@@ -213,5 +213,9 @@ end
 
 function Player:addAmmo(amount)
 	self.ammo = math.min(self.ammo + amount, self.max_ammo)
+end
+
+function Player:addBoost(amount)
+	self.boost = math.min(self.boost + amount, self.max_boost)
 end
 
