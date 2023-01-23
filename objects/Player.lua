@@ -219,3 +219,8 @@ function Player:addBoost(amount)
 	self.boost = math.min(self.boost + amount, self.max_boost)
 end
 
+
+function Player:addHp(amount)
+	self.hp = math.min(self.hp + amount, self.max_hp)
+end
+
