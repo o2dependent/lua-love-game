@@ -1,14 +1,14 @@
 Back = Attack:extend()
 
 Back.abbreviation = 'B'
-Back.color = default_color
+Back.color = skill_point_color
 
 function Back:new(player)
 	Back.super.new(self, player)
 
 	self.cooldown = 0.32
 	self.ammo_cost = 2
-	self.color = default_color
+	self.color = skill_point_color
 end
 
 function Back:shoot()

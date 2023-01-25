@@ -1,14 +1,14 @@
 Rapid = Attack:extend()
 
 Rapid.abbreviation = 'R'
-Rapid.color = default_color
+Rapid.color = boost_color
 
 function Rapid:new(player)
 	Rapid.super.new(self, player)
 
 	self.cooldown = 0.12
 	self.ammo_cost = 1
-	self.color = default_color
+	self.color = boost_color
 end
 
 function Rapid:shoot()

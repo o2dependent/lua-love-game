@@ -86,14 +86,14 @@ function AttackItem:draw()
 		self.h*1.5,
 		'line'
 	)
-	love.graphics.setColor(default_color)
 	draft:rhombus(
 		self.x,
 		self.y,
-		self.h*1.3,
-		self.w*1.3,
+		self.h*1.2,
+		self.w*1.2,
 		'line'
 	)
+	love.graphics.setColor(default_color)
 	love.graphics.setLineWidth(1)
 end
 
@@ -112,8 +112,8 @@ function AttackItem:die()
 	)
 	self.area:addGameObject(
 		'InfoText',
-		self.x,
-		self.y,
+		math.max(0, self.x + random(-self.w, self.h)),
+		math.max(0, self.y + random(-self.w, self.h)),
 		{
 			color = _G[self.attack].color,
 			text = self.attack

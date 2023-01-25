@@ -1,14 +1,14 @@
 Spread = Attack:extend()
 
 Spread.abbreviation = 'S'
-Spread.color = default_color
+Spread.color = skill_point_color
 
 function Spread:new(player)
 	Spread.super.new(self, player)
 
 	self.cooldown = 0.12
 	self.ammo_cost = 1
-	self.color = default_color
+	self.color = skill_point_color
 end
 
 function Spread:shoot()
