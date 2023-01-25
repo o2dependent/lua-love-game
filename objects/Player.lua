@@ -20,9 +20,16 @@ function Player:new(area, x, y, opts)
 	self.base_max_v = 100 -- base level max velocity
 	self.max_v = self.base_max_v -- current max velocity
 	self.a = 100 -- acceleration
-	self.attack = "Neutral"
+	self.attack = _G['Neutral'](self)
 	self.shoot_cooldown = 0.24
-	self:setAttack("Double")
+	self:setAttack("Neutral")
+	input:bind('1', function() self:setAttack("Neutral") end)
+	input:bind('2', function() self:setAttack("Double") end)
+	input:bind('3', function() self:setAttack("Rapid") end)
+	input:bind('4', function() self:setAttack("Triple") end)
+	input:bind('5', function() self:setAttack("Spread") end)
+	input:bind('6', function() self:setAttack("Back") end)
+
 
 
 	-- start attack loop
@@ -64,12 +71,17 @@ end
 function Player:attackLoop()
 	-- don't shoot if player is dead
 	if self.dead then return end
-	timer:after(self.shoot_cooldown, function()
+	timer:after(self.attack.cooldown, function()
 		if input:down('space') and self.ammo > 0 then
 			self:shoot()
 			self.ammo = math.max(0, self.ammo - 1)
 		end
 		self:attackLoop()
+		-- reset to Neutral if ammo is 0
+		if self.ammo <= 0 then
+			self:setAttack('Neutral')
+			self.ammo = self.max_ammo
+		end
 	end)
 end
 
@@ -169,51 +181,14 @@ function Player:shoot()
 	)
 
 	-- reduce ammo based on the current attack type
-	self.ammo = self.ammo - attacks[self.attack].ammo_cost
+	self.ammo = self.ammo - self.attack.ammo_cost
 
+	print(self.ammo)
 	-- create projectile
-	if self.attack == 'Neutral' then
-		self.area:addGameObject(
-			'Projectile',
-			self.x + 1.5*d*math.cos(self.r),
-			self.y + 1.5*d*math.sin(self.r),
-			{
-				r = self.r,
-				s = 2.5,
-				v = 200,
-				attack = self.attack
-			}
-		)
-	elseif self.attack == 'Double' then
-		self.area:addGameObject(
-			'Projectile',
-			self.x + 1.5*d*math.cos(self.r + math.pi/12),
-			self.y + 1.5*d*math.sin(self.r + math.pi/12),
-			{
-				r = self.r + math.pi/12,
-				s = 2.5,
-				v = 200,
-				attack = self.attack
-			}
-		)
-		self.area:addGameObject(
-			'Projectile',
-			self.x + 1.5*d*math.cos(self.r - math.pi/12),
-			self.y + 1.5*d*math.sin(self.r - math.pi/12),
-			{
-				r = self.r - math.pi/12,
-				s = 2.5,
-				v = 200,
-				attack = self.attack
-			}
-		)
-	end
+	self.attack:shoot()
+	print('after shoot')
 
-	-- reset to Neutral if ammo is 0
-	if self.ammo <= 0 then
-		self:setAttack('Neutral')
-		self.ammo = self.max_ammo
-	end
+
 end
 
 function Player:die()
@@ -249,7 +224,6 @@ function Player:addSkillPoint(amount)
 end
 
 function Player:setAttack(attack)
-	self.attack = attack
-	self.shoot_cooldown = attacks[attack].cooldown
+	self.attack = _G[attack](self)
 	self.ammo = self.max_ammo
 end
