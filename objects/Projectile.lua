@@ -5,6 +5,7 @@ function Projectile:new(area, x, y, opts)
 
 	self.s = opts.s or 2.5 -- radius of collider
 	self.v = opts.v or 200 -- velocity
+	self.attack = opts.attack or 'Neutral'
 
 	self.collider = self.area.world:newCircleCollider(self.x, self.y, self.s)
 	self.collider:setObject(self)
@@ -25,8 +26,14 @@ end
 
 
 function Projectile:draw()
-	love.graphics.setColor(hp_color)
-	love.graphics.circle('line', self.x, self.y, self.s)
+	love.graphics.setColor(default_color)
+	pushRotate(self.x, self.y, self.r)
+	love.graphics.setLineWidth(self.s - self.s/4)
+	love.graphics.line(self.x - 2*self.s, self.y, self.x, self.y)
+	love.graphics.setColor(attacks[self.attack].color)
+	love.graphics.line(self.x, self.y, self.x + 2*self.s, self.y)
+	love.graphics.setLineWidth(1)
+	love.graphics.pop()
 end
 
 function Projectile:die()

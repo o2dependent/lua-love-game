@@ -29,3 +29,19 @@ ammo_color = color255To1(ammo_color)
 boost_color = color255To1(boost_color)
 hp_color = color255To1(hp_color)
 skill_point_color = color255To1(skill_point_color)
+
+-- attacks
+attacks = {
+	['Neutral'] = {
+		cooldown = 0.24,
+		ammo_cost = 0,
+		abbreviation = 'N',
+		color = default_color,
+	},
+	['Double'] = {
+		cooldown = 0.32,
+		ammo_cost = 2,
+		abbreviation = '2',
+		color = ammo_color,
+	}
+}
