@@ -23,12 +23,12 @@ function Player:new(area, x, y, opts)
 	self.attack = _G['Neutral'](self)
 	self.shoot_cooldown = 0.24
 	self:setAttack("Neutral")
-	input:bind('1', function() self:setAttack("Neutral") end)
-	input:bind('2', function() self:setAttack("Double") end)
-	input:bind('3', function() self:setAttack("Rapid") end)
-	input:bind('4', function() self:setAttack("Triple") end)
-	input:bind('5', function() self:setAttack("Spread") end)
-	input:bind('6', function() self:setAttack("Back") end)
+	input:bind('1', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Neutral"}) end)
+	input:bind('2', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Double"}) end)
+	input:bind('3', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Rapid"}) end)
+	input:bind('4', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Triple"}) end)
+	input:bind('5', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Spread"}) end)
+	input:bind('6', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Back"}) end)
 
 
 
