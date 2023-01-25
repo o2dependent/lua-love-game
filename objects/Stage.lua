@@ -5,6 +5,7 @@ function Stage:new()
 	self.area:addPhysicsWorld()
 	-- set collision classes
 	self.area.world:addCollisionClass('Player')
+	self.area.world:addCollisionClass('Enemy')
 	self.area.world:addCollisionClass('Projectile',
 		{
 			ignores = {'Projectile'}
@@ -22,6 +23,9 @@ function Stage:new()
 
 
 	-- testing ammo
+	input:bind('r', function()
+	self.area:addGameObject('Rock', random(0, gw), random(0, gh), {v = random(-75, 75), s = random(8, 16)})
+	end)
 	input:bind('p', function()
 	self.area:addGameObject('Ammo', random(0, gw), random(0, gh))
 	end)

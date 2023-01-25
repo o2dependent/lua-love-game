@@ -11,10 +11,6 @@ RequireAllFromFolder = require "utils/RequireAllFromFolder"
 M = require "libs.Moses.moses"
 require("globals")
 require("GameObject")
-require("utils/pushRotate")
-require("utils/pushRotateScale")
-require("utils/random")
-require("utils/tableRandom")
 
 draft = Draft()
 
@@ -68,6 +64,9 @@ function love.load()
 	input:bind('up', 'up')
 	input:bind('down', 'down')
 	input:bind('space', 'space')
+
+	local utils = {}
+	RequireAllFromFolder("utils", utils)
 
 	-- initialize rooms and current room var
 	RequireAllFromFolder("rooms", rooms)
