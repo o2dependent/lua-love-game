@@ -3,9 +3,12 @@ Rock = GameObject:extend()
 function Rock:new(area, x, y, opts)
 	Rock.super.new(self, area, x, y, opts)
 
+		-- position
 	local direction = table.random({-1, 1})
+	self.x = gw/2 + direction*(gw/2 + 48)
+	self.y = random(48, gh - 48)
 	self.r = random(0, 2*math.pi)
-	self.v = self.v or random(-40, 40)
+	self.v = -direction*random(20, 40)
 	self.s = opts.s or 8
 
 	-- create a new polygon collider

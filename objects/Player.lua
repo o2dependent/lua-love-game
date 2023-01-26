@@ -183,12 +183,8 @@ function Player:shoot()
 	-- reduce ammo based on the current attack type
 	self.ammo = self.ammo - self.attack.ammo_cost
 
-	print(self.ammo)
 	-- create projectile
 	self.attack:shoot()
-	print('after shoot')
-
-
 end
 
 function Player:die()

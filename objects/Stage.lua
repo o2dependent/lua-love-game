@@ -11,6 +11,11 @@ function Stage:new()
 			ignores = {'Projectile'}
 		}
 	)
+	self.area.world:addCollisionClass('EnemyProjectile',
+		{
+			ignores = {'EnemyProjectile', 'Projectile', 'Enemy'}
+		}
+	)
 	self.area.world:addCollisionClass('Consumables',
 		{
 			ignores = {'Consumables', 'Player', 'Projectile'}
