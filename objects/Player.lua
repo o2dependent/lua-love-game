@@ -155,7 +155,7 @@ function Player:update(dt)
 		local object = collision_data.collider:getObject()
 		if object and object.die then
 			self:takeDamage(object.collide_damage)
-			object:die()
+			object:takeDamage(10)
 		end
 	end
 end
@@ -214,13 +214,17 @@ function Player:takeDamage(damage)
 	if self.hp <= 0 then
 		self:die()
 	else
-		self:iframeBlink(0.5)
+		if damage > 30 then
+			self:iframeBlink(0.5)
+		else
+			self:iframeBlink(2)
+		end
 	end
 end
 
 function Player:iframeBlink(duration)
 	self.iframe_active = true
-	slow(0.15, duration)
+	slow(0.25, duration)
 	camera:shake(6, 60, 0.4)
 	self.timer:after(
 		duration,

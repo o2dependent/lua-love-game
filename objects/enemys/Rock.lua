@@ -68,7 +68,6 @@ function Rock:hit(damage)
 	end
 end
 
-
 function Rock:die()
 	self.dead = true
 
@@ -91,5 +90,12 @@ function Rock:die()
 			self.x,
 			self.y
 		)
+	end
+end
+
+function Rock:takeDamage(damage)
+	self.hp = self.hp - damage
+	if self.hp <= 0 then
+		self:die()
 	end
 end
