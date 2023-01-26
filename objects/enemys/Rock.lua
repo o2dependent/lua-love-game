@@ -1,7 +1,11 @@
 Rock = GameObject:extend()
 
 function Rock:new(area, x, y, opts)
-	Rock.super.new(self, area, x, y, opts)
+	Rock.super.new(self, area, x,   y, opts)
+
+	self.hp = 100
+	self.attack_damage = 10
+	self.collide_damage = 10
 
 		-- position
 	local direction = table.random({-1, 1})
@@ -42,7 +46,11 @@ function Rock:update(dt)
 		if object and object.die then
 			object:die()
 		end
-		self:die()
+		local damage = object.damage
+		if not damage then
+			damage = 100
+		end
+		self:hit(damage)
 	end
 end
 
@@ -53,6 +61,14 @@ function Rock:draw()
 	love.graphics.setColor(default_color)
 end
 
+function Rock:hit(damage)
+	self.hp = self.hp - damage
+	if self.hp <= 0 then
+		self:die()
+	end
+end
+
+
 function Rock:die()
 	self.dead = true
 
@@ -62,6 +78,7 @@ function Rock:die()
 		self.y,
 		{ amount = 5 }
 	)
+
 	self.area:addGameObject(
 		'RockDeathEffect',
 		self.x,

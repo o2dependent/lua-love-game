@@ -33,9 +33,12 @@ function Area:draw()
 			return a.depth < b.depth
 		end)
 
+
 	for _, game_object in ipairs(self.game_objects) do
 		game_object:draw()
 	end
+	-- TESTING - draw collision shapes
+	-- if self.world then self.world:draw() end
 end
 
 function Area:addGameObject(game_object_type, x, y, opts)

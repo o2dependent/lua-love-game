@@ -14,6 +14,8 @@ function Player:new(area, x, y, opts)
 	self.collider:setCollisionClass('Player')
 
 	-- set other options
+	self.iframe_active = false
+	self.visible = true
 	self.r = -math.pi/2 -- player rotation
 	self.rv = 1.66 * math.pi -- rotation velocity
 	self.v = 0 -- velocity
@@ -148,26 +150,29 @@ function Player:update(dt)
 			object:die()
 		end
 	end
+	if self.collider:enter('Enemy') then
+		local collision_data = self.collider:getEnterCollisionData('Enemy')
+		local object = collision_data.collider:getObject()
+		if object and object.die then
+			self:takeDamage(object.collide_damage)
+			object:die()
+		end
+	end
 end
 
 function Player:draw()
-	-- TESTING: if player is close to the edge of the screen, draw a line to the center
-	if self.x < self.w + self.h or self.x > gw - self.w - self.h or self.y < self.w + self.h or self.y > gh - self.w - self.h then
-		love.graphics.setColor(default_color)
-		love.graphics.line(self.x, self.y, gw/2, gh/2)
-	end
-
+	if self.visible then
 	-- draw ship
-	self.ship:draw()
+		self.ship:draw()
 
-	-- TESTING draw boost bar
-	local color1 = boost_color
-	local color2 = self.trail_color
-	if self.boosting then color1, color2 = color2, color1 end
-	love.graphics.setColor(tweenColors(color1,
-	color2, self.v/self.base_max_v))
-	love.graphics.rectangle('fill', 10, 10, self.boost, 5)
-
+		-- TESTING draw boost bar
+		local color1 = boost_color
+		local color2 = self.trail_color
+		if self.boosting then color1, color2 = color2, color1 end
+		love.graphics.setColor(tweenColors(color1,
+		color2, self.v/self.base_max_v))
+		love.graphics.rectangle('fill', 10, 10, self.boost, 5)
+	end
 end
 
 function Player:shoot()
@@ -200,6 +205,35 @@ function Player:die()
 			self.y
 		)
 	end
+end
+
+function Player:takeDamage(damage)
+	damage = damage or 10
+	if self.iframe_active then return end
+	self.hp = self.hp - damage
+	if self.hp <= 0 then
+		self:die()
+	else
+		self:iframeBlink(0.5)
+	end
+end
+
+function Player:iframeBlink(duration)
+	self.iframe_active = true
+	slow(0.15, duration)
+	camera:shake(6, 60, 0.4)
+	self.timer:after(
+		duration,
+		function()
+			self.iframe_active = false
+			self.visible = true
+		end
+	)
+	self.timer:every(0.05, function()
+		self.visible = not self.visible
+	end,
+	math.floor(duration/0.05) - 1
+)
 end
 
 function Player:addAmmo(amount)

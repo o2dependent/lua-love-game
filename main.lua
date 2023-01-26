@@ -36,7 +36,6 @@ function love.load()
 
 	-- require all object
 	RequireAllFromFolder("objects", objects)
-	print(objects[1])
 
 	-- load fonts
 	fonts['m5x7_16'] = love.graphics.newFont("resourses/fonts/m5x7.ttf", 16)
