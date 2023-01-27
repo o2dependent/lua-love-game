@@ -36,6 +36,50 @@ function Shooter:new(area, x, y, opts)
 	self.collider:setAngle(direction == -1 and 0 or math.pi)
 	-- allow collider to rotate
 	self.collider:setFixedRotation(true)
+
+	-- set shooting loop
+	self:attackLoop()
+end
+
+function Shooter:attackLoop()
+	self.timer:after(
+		random(3, 5),
+		function()
+			self.area:addGameObject(
+				'ShooterPreAttackEffect',
+				self.x + 1.4*self.w*math.cos(self.collider:getAngle()),
+				self.y + 1.4*self.w*math.sin(self.collider:getAngle()),
+				{
+					duration = 1,
+					color = hp_color,
+					parent = self
+				}
+			)
+			self.timer:after(
+				1,
+				function()
+					self.area:addGameObject(
+						'EnemyProjectile',
+						self.x + 1.4*self.w*math.cos(self.collider:getAngle()),
+						self.y + 1.4*self.h*math.sin(self.collider:getAngle()),
+						{
+							-- set angle towards the player
+							-- this is done with the following formula:
+							-- angle = math.atan2(target.y - source.y, target.x - source.x)
+							-- where target is the player and source is the projectile
+							r = math.atan2(current_room.player.y - self.y, current_room.player.x - self.x),
+							v = random(80, 100),
+							s = 3.5,
+							color = hp_color,
+						}
+					)
+					if not self.dead then
+						self:attackLoop()
+					end
+				end
+			)
+		end
+	)
 end
 
 function Shooter:update(dt)
