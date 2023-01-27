@@ -75,3 +75,10 @@ function Stage:destroy()
 	self.area:destroy()
 	self.area = nil
 end
+
+function Stage:finish()
+	timer:after(1, function()
+		timer:clear()
+		gotoRoom('Stage')
+	end)
+end

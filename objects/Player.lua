@@ -205,6 +205,8 @@ function Player:die()
 			self.y
 		)
 	end
+
+	current_room:finish()
 end
 
 function Player:takeDamage(damage)
