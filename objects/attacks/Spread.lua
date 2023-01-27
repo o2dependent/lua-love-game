@@ -1,6 +1,6 @@
 Spread = Attack:extend()
 
-Spread.abbreviation = 'S'
+Spread.abbreviation = 'Sp'
 Spread.color = skill_point_color
 
 function Spread:new(player)

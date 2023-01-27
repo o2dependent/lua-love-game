@@ -31,6 +31,7 @@ function Player:new(area, x, y, opts)
 	input:bind('4', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Triple"}) end)
 	input:bind('5', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Spread"}) end)
 	input:bind('6', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Back"}) end)
+	input:bind('7', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Side"}) end)
 
 
 
@@ -76,7 +77,6 @@ function Player:attackLoop()
 	timer:after(self.attack.cooldown, function()
 		if input:down('space') and self.ammo > 0 then
 			self:shoot()
-			self.ammo = math.max(0, self.ammo - 1)
 		end
 		self:attackLoop()
 		-- reset to Neutral if ammo is 0
@@ -164,14 +164,6 @@ function Player:draw()
 	if self.visible then
 	-- draw ship
 		self.ship:draw()
-
-		-- TESTING draw boost bar
-		local color1 = boost_color
-		local color2 = self.trail_color
-		if self.boosting then color1, color2 = color2, color1 end
-		love.graphics.setColor(tweenColors(color1,
-		color2, self.v/self.base_max_v))
-		love.graphics.rectangle('fill', 10, 10, self.boost, 5)
 	end
 end
 
