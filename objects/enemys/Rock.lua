@@ -43,10 +43,10 @@ function Rock:update(dt)
 	if self.collider:enter('Projectile') then
 		local collision_data = self.collider:getEnterCollisionData('Projectile')
 		local object = collision_data.collider:getObject()
+		local damage = object.damage
 		if object and object.die then
 			object:die()
 		end
-		local damage = object.damage
 		if not damage then
 			damage = 100
 		end
@@ -70,6 +70,7 @@ end
 
 function Rock:die()
 	self.dead = true
+	current_room.score = current_room.score + 100
 
 	self.area:addGameObject(
 		'Ammo',

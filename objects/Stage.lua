@@ -10,25 +10,14 @@ function Stage:new()
 	-- set collision classes
 	self.area.world:addCollisionClass('Player')
 	self.area.world:addCollisionClass('Enemy')
-	self.area.world:addCollisionClass('Projectile',
-		{
-			ignores = {'Projectile'}
-		}
-	)
-	self.area.world:addCollisionClass('EnemyProjectile',
-		{
-			ignores = {'EnemyProjectile', 'Projectile', 'Enemy'}
-		}
-	)
-	self.area.world:addCollisionClass('Consumables',
-		{
-			ignores = {'Consumables', 'Player', 'Projectile'}
-		}
-	)
+	self.area.world:addCollisionClass('Projectile',{ignores = {'Projectile'}})
+	self.area.world:addCollisionClass('EnemyProjectile',{ignores = {'EnemyProjectile', 'Projectile', 'Enemy'}})
+	self.area.world:addCollisionClass('Consumables',{ignores = {'Consumables', 'Player', 'Projectile'}})
 
-	-- add player and stage canvas
+	-- add player, score and stage canvas
 	self.main_canvas = love.graphics.newCanvas(gw, gh)
 	self.player = self.area:addGameObject('Player', gw/2, gh/2)
+	self.score = 0
 
 
 	-- testing ammo
@@ -36,19 +25,19 @@ function Stage:new()
 		self.area:addGameObject('Rock', random(0, gw), random(0, gh), {v = random(-75, 75), s = random(8, 16)})
 	end)
 	input:bind('s', function()
-		self.area:addGameObject('Shooter', random(0, gw), random(0, gh))
+		self.area:addGameObject('Shooter')
 	end)
 	input:bind('p', function()
-		self.area:addGameObject('Ammo', random(0, gw), random(0, gh))
+		self.area:addGameObject('Ammo')
 	end)
 	input:bind('b', function()
-		self.area:addGameObject('Boost', random(0, gw), random(0, gh))
+		self.area:addGameObject('Boost')
 	end)
 	input:bind('h', function()
-		self.area:addGameObject('Health', random(0, gw), random(0, gh))
+		self.area:addGameObject('Health')
 	end)
 	input:bind('k', function()
-		self.area:addGameObject('SkillPoint', random(0, gw), random(0, gh))
+		self.area:addGameObject('SkillPoint')
 	end)
 end
 

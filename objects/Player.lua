@@ -244,10 +244,12 @@ end
 
 function Player:addAmmo(amount)
 	self.ammo = math.min(self.ammo + amount, self.max_ammo)
+	current_room.score = current_room.score + 50
 end
 
 function Player:addBoost(amount)
 	self.boost = math.min(self.boost + amount, self.max_boost)
+	current_room.score = current_room.score + 150
 end
 
 
@@ -257,9 +259,11 @@ end
 
 function Player:addSkillPoint(amount)
 	skill_points = skill_points + amount
+	current_room.score = current_room.score + 250
 end
 
 function Player:setAttack(attack)
 	self.attack = _G[attack](self)
 	self.ammo = self.max_ammo
+	if current_room then current_room.score = current_room.score + 500 end
 end

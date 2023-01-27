@@ -121,6 +121,7 @@ end
 
 function Shooter:die()
 	self.dead = true
+	current_room.score = current_room.score + 150
 
 	self.area:addGameObject(
 		'Ammo',
