@@ -195,7 +195,7 @@ end
 function Player:die()
 	slow(0.15, 1)
 	flash(4)
-	camera:shake(6, 60, 0.4)
+	camera:shake(4, 5, 60)
 	self.dead = true
 
 	for i = 1, love.math.random(8, 16) do
@@ -225,7 +225,7 @@ end
 function Player:iframeBlink(duration)
 	self.iframe_active = true
 	slow(0.25, duration)
-	camera:shake(6, 60, 0.4)
+	camera:shake(4, 1, 60)
 	self.timer:after(
 		duration,
 		function()
