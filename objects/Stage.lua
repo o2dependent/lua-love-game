@@ -3,6 +3,10 @@ Stage = Object:extend()
 function Stage:new()
 	self.area = Area(self)
 	self.area:addPhysicsWorld()
+
+	-- director
+	self.director = Director(self)
+
 	-- set collision classes
 	self.area.world:addCollisionClass('Player')
 	self.area.world:addCollisionClass('Enemy')
@@ -49,6 +53,7 @@ function Stage:new()
 end
 
 function Stage:update(dt)
+	self.director:update(dt)
 	self.area:update(dt)
 end
 
