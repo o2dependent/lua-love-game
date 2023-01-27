@@ -215,9 +215,9 @@ function Player:takeDamage(damage)
 		self:die()
 	else
 		if damage > 30 then
-			self:iframeBlink(0.5)
+			self:iframeBlink(1)
 		else
-			self:iframeBlink(2)
+			self:iframeBlink(0.25)
 		end
 	end
 end
