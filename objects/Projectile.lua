@@ -6,6 +6,7 @@ function Projectile:new(area, x, y, opts)
 	self.s = opts.s or 2.5 -- radius of collider
 	self.v = opts.v or 200 -- velocity
 	self.color = opts.color or default_color
+	self.damage = 100
 
 	self.collider = self.area.world:newCircleCollider(self.x, self.y, self.s)
 	self.collider:setObject(self)

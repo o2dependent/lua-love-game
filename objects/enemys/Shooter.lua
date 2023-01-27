@@ -97,7 +97,8 @@ function Shooter:update(dt)
 		if object and object.die then
 			object:die()
 		end
-		local damage = object.damage
+		local damage = 10
+		if object.damage then damage = object.damage end
 		if not damage then
 			damage = 100
 		end
