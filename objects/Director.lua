@@ -95,7 +95,6 @@ function Director:setEnemySpawnsForThisRound()
 	table.sort(enemy_spawn_times, function(a, b) return a < b end)
 	for i = 1, #enemy_spawn_times do
 		timer:after(enemy_spawn_times[i], function()
-			print('spawned ' .. enemy_list[i])
 			self.stage.area:addGameObject(enemy_list[i])
 		end)
 	end
