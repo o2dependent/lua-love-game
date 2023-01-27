@@ -39,6 +39,10 @@ function Stage:new()
 	input:bind('k', function()
 		self.area:addGameObject('SkillPoint')
 	end)
+
+	-- ui variables
+	self.font = fonts.m5x7_16
+
 end
 
 function Stage:update(dt)
@@ -52,6 +56,55 @@ function Stage:draw()
 	camera:attach(0, 0, gw, gh)
 	self.area:draw()
 	camera:detach()
+	love.graphics.setFont(self.font)
+	love.graphics.setColor(default_color)
+	love.graphics.print(
+		'' .. self.score,
+		gw - 20,
+		10,
+		0,
+		1,
+		1,
+		math.floor(self.font:getWidth('' .. self.score)/2),
+		self.font:getHeight()/2
+	)
+	love.graphics.setColor(255, 255, 255)
+
+	-- HP
+	local r, g, b = unpack(hp_color)
+	local hp, max_hp = self.player.hp, self.player.max_hp
+	love.graphics.setColor(r, g, b)
+	love.graphics.rectangle('fill', gw/2 - 52, gh - 16, 48*(hp/max_hp), 4)
+	love.graphics.setColor(r - (32/255), g - (32/255), b - (32/255))
+	love.graphics.rectangle('line', gw/2 - 52, gh - 16, 48, 4)
+	love.graphics.print('HP', gw/2 - 52 + (48/2), gh - 24, 0, 1, 1, math.floor(self.font:getWidth('HP')/2), math.floor(self.font:getHeight()/2))
+
+	-- Boost
+	local r, g, b = unpack(boost_color)
+	local boost, max_boost = self.player.boost, self.player.max_boost
+	love.graphics.setColor(r, g, b)
+	love.graphics.rectangle('fill', gw/2 - 52, 16, 48*(boost/max_boost), 4)
+	love.graphics.setColor(r - (32/255), g - (32/255), b - (32/255))
+	love.graphics.rectangle('line', gw/2 - 52, 16, 48, 4)
+	love.graphics.print('Boost', gw/2 - 52 + (48/2), 24, 0, 1, 1, math.floor(self.font:getWidth('Boost')/2), math.floor(self.font:getHeight()/2))
+
+	-- ammo
+	local r, g, b = unpack(ammo_color)
+	local ammo, max_ammo = self.player.ammo, self.player.max_ammo
+	love.graphics.setColor(r, g, b)
+	love.graphics.rectangle('fill', gw/2 + 4, 16, 48*(ammo/max_ammo), 4)
+	love.graphics.setColor(r - (32/255), g - (32/255), b - (32/255))
+	love.graphics.rectangle('line', gw/2 + 4, 16, 48, 4)
+	love.graphics.print('Ammo', gw/2 + 4 + (48/2), 24, 0, 1, 1, math.floor(self.font:getWidth('Ammo')/2), math.floor(self.font:getHeight()/2))
+
+	-- Cycle
+	local r, g, b = unpack(skill_point_color)
+	local round_timer, round_duration = self.director.round_timer, self.director.round_duration
+	love.graphics.setColor(r, g, b)
+	love.graphics.rectangle('fill', gw/2 + 4, gh - 16, 48*(round_timer/round_duration), 4)
+	love.graphics.setColor(r - (32/255), g - (32/255), b - (32/255))
+	love.graphics.rectangle('line', gw/2 + 4, gh - 16, 48, 4)
+	love.graphics.print('Cycle', gw/2 + 4 + (48/2), gh - 24, 0, 1, 1, math.floor(self.font:getWidth('Cycle')/2), math.floor(self.font:getHeight()/2))
 	love.graphics.setCanvas()
 
 	love.graphics.setColor(255,255,255,255)
