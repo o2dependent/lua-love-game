@@ -8,6 +8,8 @@
 		"draft",
 		"fonts",
 		"skill_points",
-		"attacks"
+		"attacks",
+		"tree",
+		"enemies"
 	]
 }

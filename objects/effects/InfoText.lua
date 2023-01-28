@@ -20,13 +20,15 @@ function InfoText:new(area, x, y, opts)
 				function ()
 					local random_characters = {
 						'!@#$%¨&*()-=+[]^~/;?><.,|',
-						'0123456789','abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWYXZ'
+						'0123456789',
+						'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWYXZ'
 					}
 					for i, character in ipairs(self.characters) do
 						if math.random(1, 20) == 1 then
 							local char_type_index = 1
 							for j = 1, #random_characters do
-								if random_characters[j]:find(character) then
+								print(i, j, random_characters[j], character)
+								if random_characters[j] and random_characters[j]:find(character) then
 									char_type_index = j
 									break
 								end

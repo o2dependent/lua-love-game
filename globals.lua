@@ -45,3 +45,11 @@ attacks = {
 		color = ammo_color,
 	}
 }
+
+-- all enemies classes as strings
+enemies = {'Rock', 'Shooter'}
+
+-- tree
+tree = {}
+tree[2] = {'HP', {'6% Increased HP', 'hp_multiplier', 0.06}}
+tree[15] = {'Flat HP', {'+10 Max HP', 'flat_hp', 10}}

@@ -43,14 +43,14 @@ function Rock:update(dt)
 	if self.collider:enter('Projectile') then
 		local collision_data = self.collider:getEnterCollisionData('Projectile')
 		local object = collision_data.collider:getObject()
-		local damage = object.damage
+		local damage = 100
 		if object and object.die then
+			if object.damage then
+				damage = object.damage
+			end
+			self:hit(damage)
 			object:die()
 		end
-		if not damage then
-			damage = 100
-		end
-		self:hit(damage)
 	end
 end
 

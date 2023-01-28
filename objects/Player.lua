@@ -38,8 +38,9 @@ function Player:new(area, x, y, opts)
 	-- start attack loop
 	self:attackLoop()
 
-	-- start tick loop
-	self.timer:every(5, function() self:tick() end)
+	-- start cycle loop
+	self.cycle_cooldown = 5
+	self:cycle()
 
 	-- set up ship
 	self.ship = Fighter(self.area, self)
@@ -47,6 +48,8 @@ function Player:new(area, x, y, opts)
 	input:bind('f6', function() self.ship = Scorpion(self.area, self) end)
 
 	-- boost trail
+	self.flat_boost = 0
+	self.boost_multiplier = 1
 	self.boosting = false
 	self.max_boost = 100
 	self.boost = self.max_boost
@@ -59,25 +62,53 @@ function Player:new(area, x, y, opts)
 	end)
 
 	-- player hp
+	self.flat_hp = 0
+	self.hp_multiplier = 1
 	self.max_hp = 100
 	self.hp = self.max_hp
 
 	-- ammo
+	self.flat_ammo = 0
+	self.ammo_multiplier = 1
 	self.max_ammo = 100
 	self.ammo = self.max_ammo
+	self.manual_shooting = false
+
+	self.flat_ammo_gain = 0
+
+	self:setStats()
 end
 
-function Player:tick()
-	self.area:addGameObject('TickEffect', self.x, self.y, {parent = self})
+function Player:setStats()
+	self.max_hp = (self.max_hp + self.flat_hp)*self.hp_multiplier
+	self.hp = self.max_hp
+
+	self.max_ammo = (self.max_ammo + self.flat_ammo)*self.ammo_multiplier
+	self.ammo = self.max_ammo
+
+	self.max_boost = (self.max_boost + self.flat_boost)*self.boost_multiplier
+	self.boost = self.max_boost
+end
+
+function Player:cycle()
+	self.timer:after(self.cycle_cooldown, function()
+		self.area:addGameObject('TickEffect', self.x, self.y, {parent = self})
+		self:cycle()
+	end)
 end
 
 function Player:attackLoop()
 	-- don't shoot if player is dead
 	if self.dead then return end
 	timer:after(self.attack.cooldown, function()
-		if input:down('space') and self.ammo > 0 then
+		if self.manual_shooting then
+			if input:down('space') and self.ammo > 0 then
+				self:shoot()
+			end
+		else
 			self:shoot()
 		end
+
 		self:attackLoop()
 		-- reset to Neutral if ammo is 0
 		if self.ammo <= 0 then
@@ -235,7 +266,7 @@ function Player:iframeBlink(duration)
 end
 
 function Player:addAmmo(amount)
-	self.ammo = math.min(self.ammo + amount, self.max_ammo)
+	self.ammo = math.min(self.ammo + self.flat_ammo_gain + amount, self.max_ammo)
 	current_room.score = current_room.score + 50
 end
 
