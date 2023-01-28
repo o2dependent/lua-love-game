@@ -40,7 +40,7 @@ function Director:new(stage)
 
 	self.attack_duration = 30
 	self.attack_timer = 0
-	self.available_attacks = chanceList({'Triple', 30}, {'Spread', 20}, {'Side', 20}, {'Rapid', 20}, {'Double', 20}, {'Back', 10})
+	self.available_attacks = chanceList({'Triple', 30}, {'Spread', 10}, {'Side', 20}, {'Rapid', 15}, {'Double', 15}, {'Back', 10}, {'Homing', 10})
 
 	self:setEnemySpawnsForThisRound()
 end

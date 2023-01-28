@@ -6,9 +6,9 @@ Homing.color = skill_point_color
 function Homing:new(player)
 	Homing.super.new(self, player)
 
-	self.cooldown = 0.32
+	self.cooldown = 0.56
 	self.homing_strength = 0.1
-	self.ammo_cost = 1
+	self.ammo_cost = 4
 	self.color = ammo_color
 	self.damage = 100
 end
