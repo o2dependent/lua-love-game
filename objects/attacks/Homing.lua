@@ -9,7 +9,7 @@ function Homing:new(player)
 	self.cooldown = 0.56
 	self.homing_strength = 0.1
 	self.ammo_cost = 4
-	self.color = ammo_color
+	self.color = skill_point_color
 	self.damage = 100
 end
 

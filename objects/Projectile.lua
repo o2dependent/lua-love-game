@@ -15,6 +15,24 @@ function Projectile:new(area, x, y, opts)
 	self.collider:setObject(self)
 	self.collider:setLinearVelocity(self.v * math.cos(self.r), self.v * math.sin(self.r))
 	self.collider:setCollisionClass('Projectile')
+
+	if self.homing then
+		self.timer:every(0.01, function ()
+			local r, g, b = unpack(self.color)
+			r, g, b = r + 0.1, g + 0.1, b + 0.1
+			self.area:addGameObject(
+				'TrailParticle',
+				self.x,
+				self.y,
+				{
+					r = self.s, -- radius
+					-- d = random(0.2, 0.35), -- duration
+					d = 0.05, -- duration
+					color = {r, g, b} -- color
+				}
+			)
+		end)
+	end
 end
 
 function Projectile:update(dt)
@@ -72,12 +90,17 @@ end
 function Projectile:draw()
 	love.graphics.setColor(default_color)
 	pushRotate(self.x, self.y, self.r)
-	love.graphics.setLineWidth(self.s - self.s/4)
-	love.graphics.line(self.x - 2*self.s, self.y, self.x, self.y)
-	love.graphics.setColor(self.color)
-	love.graphics.line(self.x, self.y, self.x + 2*self.s, self.y)
-	love.graphics.setLineWidth(1)
-	love.graphics.pop()
+	if self.homing then
+		love.graphics.setColor(self.color)
+		draft:rhombus(self.x, self.y, self.s * 2, self.s * 2, 'fill')
+	else
+		love.graphics.setLineWidth(self.s - self.s/4)
+		love.graphics.line(self.x - 2*self.s, self.y, self.x, self.y)
+		love.graphics.setColor(self.color)
+		love.graphics.line(self.x, self.y, self.x + 2*self.s, self.y)
+		love.graphics.setLineWidth(1)
+	end
+		love.graphics.pop()
 end
 
 function Projectile:die()
