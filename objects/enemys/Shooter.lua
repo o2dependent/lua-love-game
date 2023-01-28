@@ -95,14 +95,14 @@ function Shooter:update(dt)
 		local collision_data = self.collider:getEnterCollisionData('Projectile')
 		local object = collision_data.collider:getObject()
 		if object and object.die then
+			local damage = 10
+			if object.damage then damage = object.damage end
+			if not damage then
+				damage = 100
+			end
+			self:hit(damage)
 			object:die()
 		end
-		local damage = 10
-		if object.damage then damage = object.damage end
-		if not damage then
-			damage = 100
-		end
-		self:hit(damage)
 	end
 end
 
