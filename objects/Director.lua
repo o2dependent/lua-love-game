@@ -51,15 +51,22 @@ function Director:update(dt)
 		self.round_timer = 0
 		self.difficulty = self.difficulty + 1
 		self:setEnemySpawnsForThisRound()
+		self.stage.player:cycle()
 	end
 
 	self.consumable_timer = self.consumable_timer + dt
 	if self.consumable_timer > self.consumable_duration then
 		self.consumable_timer = 0
+		local consumable = self.available_consumables:next()
+		local opts = {}
+		if consumable == 'SkillPoint' then
+			opts.amount = self.difficulty
+		end
 		self.stage.area:addGameObject(
-			self.available_consumables:next(),
+			consumable,
 			random(0, gw),
-			random(0, gh)
+			random(0, gh),
+			opts
 		)
 	end
 

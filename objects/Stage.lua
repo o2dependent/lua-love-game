@@ -57,6 +57,17 @@ function Stage:draw()
 	self.area:draw()
 	camera:detach()
 	love.graphics.setFont(self.font)
+	love.graphics.setColor(skill_point_color)
+	love.graphics.print(
+		skill_points .. ' SP',
+		20,
+		10,
+		0,
+		1,
+		1,
+		math.floor(self.font:getWidth('' .. skill_points)/2),
+		self.font:getHeight()/2
+	)
 	love.graphics.setColor(default_color)
 	love.graphics.print(
 		'' .. self.score,
@@ -101,7 +112,7 @@ function Stage:draw()
 	love.graphics.print(math.floor(self.player.ammo) .. '/' .. math.floor(self.player.max_ammo), gw/2 + 4 + (48/2), math.floor(self.font:getHeight()/2), 0, 1, 1, math.floor(self.font:getWidth(math.floor(self.player.ammo) .. '/' .. math.floor(self.player.max_ammo))/2), math.floor(self.font:getHeight()/2))
 
 	-- Cycle
-	local r, g, b = unpack(skill_point_color)
+	local r, g, b = unpack(default_color)
 	local round_timer, round_duration = self.director.round_timer, self.director.round_duration
 	love.graphics.setColor(r, g, b)
 	love.graphics.rectangle('fill', gw/2 + 4, gh - 16, 48*(round_timer/round_duration), 4)

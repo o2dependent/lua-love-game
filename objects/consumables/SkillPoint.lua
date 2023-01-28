@@ -4,7 +4,7 @@ function SkillPoint:new(area, x, y, opts)
 	SkillPoint.super.new(self, area, x, y, opts)
 
 	-- amount of skill point to add
-	self.amount = opts.amount or 5
+	self.amount = opts.amount or 1
 
 	-- position
 	local direction = table.random({-1, 1})
@@ -84,7 +84,7 @@ function SkillPoint:die()
 		self.y,
 		{
 			color = skill_point_color,
-			text = '+1 SP'
+			text = '+' .. self.amount ..' SP'
 		}
 	)
 end

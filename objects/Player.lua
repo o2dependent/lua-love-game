@@ -40,8 +40,8 @@ function Player:new(area, x, y, opts)
 	self:attackLoop()
 
 	-- start cycle loop
-	self.cycle_cooldown = 5
-	self:cycle()
+	-- self.cycle_cooldown = 5
+	-- self:cycle()
 
 	-- set up ship
 	self.ship = Fighter(self.area, self)
@@ -92,10 +92,10 @@ function Player:setStats()
 end
 
 function Player:cycle()
-	self.timer:after(self.cycle_cooldown, function()
-		self.area:addGameObject('TickEffect', self.x, self.y, {parent = self})
-		self:cycle()
-	end)
+	-- self.timer:after(self.cycle_cooldown, function()
+		self.area:addGameObject('CycleEffect', self.x, self.y, {parent = self})
+		-- self:cycle()
+	-- end)
 end
 
 function Player:attackLoop()
