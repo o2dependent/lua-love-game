@@ -48,6 +48,20 @@ function Area:addGameObject(game_object_type, x, y, opts)
 	return game_object
 end
 
+function Area:getGameObjects(func)
+	local game_objects = {}
+	for _, game_object in ipairs(self.game_objects) do
+		if func then
+			if func(game_object) then
+				table.insert(game_objects, game_object)
+			end
+		else
+			table.insert(game_objects, game_object)
+		end
+	end
+	return game_objects
+end
+
 function Area:destroy()
 	for i = #self.game_objects, 1, -1 do
 		local game_object = self.game_objects[i]
