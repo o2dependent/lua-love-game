@@ -32,6 +32,7 @@ function Player:new(area, x, y, opts)
 	input:bind('5', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Spread"}) end)
 	input:bind('6', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Back"}) end)
 	input:bind('7', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Side"}) end)
+	input:bind('8', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Homing"}) end)
 
 
 
@@ -124,6 +125,7 @@ function Player:update(dt)
 	-- this keeps increase/decrease of values between frames consistent
 
 	Player.super.update(self, dt)
+	if self.attack and self.attack.update then self.attack:update(dt) end
 
 	-- set boost
 	self.boost = math.min(self.boost + 10*dt, self.max_boost)

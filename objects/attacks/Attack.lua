@@ -10,6 +10,10 @@ function Attack:new(player)
 	self.color = default_color
 end
 
+function Attack:update(dt)
+
+end
+
 function Attack:shoot()
 
 end
