@@ -22,9 +22,13 @@ function Player:new(area, x, y, opts)
 	self.base_max_v = 100 -- base level max velocity
 	self.max_v = self.base_max_v -- current max velocity
 	self.a = 100 -- acceleration
+
+	-- set up attacks
+	self.attack_timer = 0
 	self.attack = _G['Neutral'](self)
-	self.shoot_cooldown = 0.24
 	self:setAttack("Neutral")
+	self.aspd_multiplier = 1
+
 	input:bind('1', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Neutral"}) end)
 	input:bind('2', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Double"}) end)
 	input:bind('3', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Rapid"}) end)
@@ -33,11 +37,6 @@ function Player:new(area, x, y, opts)
 	input:bind('6', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Back"}) end)
 	input:bind('7', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Side"}) end)
 	input:bind('8', function() self.area:addGameObject("AttackItem",random(0, gw), random(0, gh), {attack = "Homing"}) end)
-
-
-
-	-- start attack loop
-	self:attackLoop()
 
 	-- start cycle loop
 	-- self.cycle_cooldown = 5
@@ -170,25 +169,22 @@ function Player:cycle()
 	-- end)
 end
 
-function Player:attackLoop()
+function Player:fireShot()
 	-- don't shoot if player is dead
 	if self.dead then return end
-	timer:after(self.attack.cooldown, function()
-		if self.manual_shooting then
-			if input:down('space') and self.ammo > 0 then
-				self:shoot()
-			end
-		else
+
+	if self.manual_shooting then
+		if input:down('space') and self.ammo > 0 then
 			self:shoot()
 		end
-
-		self:attackLoop()
-		-- reset to Neutral if ammo is 0
-		if self.ammo <= 0 then
-			self:setAttack('Neutral')
-			self.ammo = self.max_ammo
-		end
-	end)
+	else
+		self:shoot()
+	end
+	-- reset to Neutral if ammo is 0
+	if self.ammo <= 0 then
+		self:setAttack('Neutral')
+		self.ammo = self.max_ammo
+	end
 end
 
 function Player:update(dt)
@@ -244,6 +240,13 @@ function Player:update(dt)
 	-- update position and velocity
 	self.v = math.min(self.v + self.a*dt, self.max_v)
 	self.collider:setLinearVelocity(self.v*math.cos(self.r), self.v*math.sin(self.r))
+
+	-- shoot
+	self.attack_timer = self.attack_timer + dt
+	if self.attack_timer > self.attack.cooldown * self.aspd_multiplier then
+		self.attack_timer = 0
+		self:fireShot()
+	end
 
 	-- player dies if they go off screen
 	if self.x < 0 or self.x > gw or self.y < 0 or self.y > gh then self:die() end
