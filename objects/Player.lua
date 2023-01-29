@@ -46,6 +46,7 @@ function Player:new(area, x, y, opts)
 	self.ship = Fighter(self.area, self)
 	input:bind('f5', function() self.ship = Fighter(self.area, self) end)
 	input:bind('f6', function() self.ship = Scorpion(self.area, self) end)
+	input:bind('/', function() self:addItem('BigAmmoItem') end)
 
 	-- boost trail
 	self.flat_boost = 0
@@ -53,9 +54,11 @@ function Player:new(area, x, y, opts)
 	self.boosting = false
 	self.max_boost = 100
 	self.boost = self.max_boost
+
 	self.can_boost = true
 	self.boost_timer = 0
 	self.boost_cooldown = 2
+
 	self.trail_color = skill_point_color
 	self.timer:every(0.02, function ()
 		self.ship:trail()
@@ -75,6 +78,10 @@ function Player:new(area, x, y, opts)
 	self.manual_shooting = false
 
 	self.flat_ammo_gain = 0
+
+	-- items and skills
+	self.items = {}
+	self.skills = {}
 
 	self:setStats()
 
@@ -98,6 +105,31 @@ end
 
 
 function Player:setStats()
+	self.aspd_multiplier = 1
+	self.flat_boost = 0
+	self.boost_multiplier = 1
+	self.flat_hp = 0
+	self.hp_multiplier = 1
+	self.max_hp = 100
+	self.flat_ammo = 0
+	self.ammo_multiplier = 1
+	self.max_ammo = 100
+	self.manual_shooting = false
+	self.flat_ammo_gain = 0
+
+	-- set stats based on items
+	for _, item in ipairs(self.items) do
+		if item.updateStats then
+			print(item.updateStats)
+
+			item:updateStats()
+		end
+	end
+	-- set stats based on skills
+	for _, item in ipairs(self.skills) do
+		if item.updateStats then item:updateStats() end
+	end
+
 	self.max_hp = (self.max_hp + self.flat_hp)*self.hp_multiplier
 	self.hp = self.max_hp
 
@@ -106,6 +138,15 @@ function Player:setStats()
 
 	self.max_boost = (self.max_boost + self.flat_boost)*self.boost_multiplier
 	self.boost = self.max_boost
+end
+
+function Player:addItem(item_name)
+	-- add item to player
+	if _G[item_name] then
+		table.insert(self.items, _G[item_name](self.area, self))
+		self:setStats()
+		self:generateChances()
+	end
 end
 
 function Player:onAmmoPickup()
@@ -195,6 +236,16 @@ function Player:update(dt)
 	Player.super.update(self, dt)
 	if self.attack and self.attack.update then self.attack:update(dt) end
 
+	-- update items
+	for _, item in ipairs(self.items) do
+		if item.update then item:update(dt) end
+	end
+
+	-- update skills
+	for _, skill in ipairs(self.skills) do
+		if skill.update then skill:update(dt) end
+	end
+
 	-- set boost
 	self.boost = math.min(self.boost + 10*dt, self.max_boost)
 	self.boost_timer = self.boost_timer + dt
@@ -272,6 +323,15 @@ function Player:draw()
 	if self.visible then
 	-- draw ship
 		self.ship:draw()
+	end
+	-- draw items
+	for _, item in ipairs(self.items) do
+		if item.draw then item:draw() end
+	end
+
+	-- draw skills
+	for _, skill in ipairs(self.skills) do
+		if skill.draw then skill:draw() end
 	end
 end
 

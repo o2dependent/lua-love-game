@@ -11,6 +11,7 @@ RequireAllFromFolder = require "utils/RequireAllFromFolder"
 M = require "libs.Moses.moses"
 require("globals")
 require("GameObject")
+require("PlayerItem")
 
 draft = Draft()
 
