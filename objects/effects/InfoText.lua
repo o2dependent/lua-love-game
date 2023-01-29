@@ -19,7 +19,7 @@ function InfoText:new(area, x, y, opts)
 				0.035,
 				function ()
 					local random_characters = {
-						'!@#$%¨&*()-=+[]^~/;?><.,|',
+						'!@#$%¨&*()-=+[]^~/;?><.,| ',
 						'0123456789',
 						'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWYXZ'
 					}
@@ -27,7 +27,9 @@ function InfoText:new(area, x, y, opts)
 						if math.random(1, 20) == 1 then
 							local char_type_index = 1
 							for j = 1, #random_characters do
-								if character and random_characters[j] and random_characters[j]:find(character) then
+								local search_string = character
+								if j == 1 then search_string = '%'..search_string end
+								if character and random_characters[j] and random_characters[j].find and random_characters[j]:find(character) then
 									char_type_index = j
 									break
 								end
@@ -72,6 +74,17 @@ function InfoText:new(area, x, y, opts)
 	end
 
 	self.font = fonts.m5x7_16
+
+	-- move this text if there is another info text colliding with it
+	local colliding_texts = self.area:getGameObjects(function(object)
+		if object:is(InfoText) and object ~= self then
+			return object.x > self.x - 8 and object.x < self.x + 8 and object.y > self.y - 8 and object.y < self.y + 8
+		end
+	end)
+	if #colliding_texts > 0 then
+		self.x = self.x + self.font:getWidth(colliding_texts[1].text)
+		self.y = self.y + self.font:getHeight()
+	end
 end
 
 function InfoText:update(dt)

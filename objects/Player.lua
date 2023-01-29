@@ -83,6 +83,7 @@ function Player:new(area, x, y, opts)
 	self.chances = {}
 	self.launch_homing_projectile_on_ammo_pickup_chance = 25
 	self.regain_hp_on_ammo_pickup_chance = 25
+	self.regain_hp_on_sp_pickup_chance = 25
 
 	self:generateChances()
 end
@@ -133,6 +134,21 @@ function Player:onAmmoPickup()
 			}
 		)
 	end
+	if self.chances.regain_hp_on_ammo_pickup_chance:next() then
+		self:addHp(25)
+		self.area:addGameObject(
+			'InfoText',
+			self.x,
+			self.y,
+			{
+				color = boost_color,
+				text = 'HP Regain!'
+			}
+		)
+	end
+end
+
+function Player:onSkillPointPickup()
 	if self.chances.regain_hp_on_ammo_pickup_chance:next() then
 		self:addHp(25)
 		self.area:addGameObject(
@@ -341,6 +357,7 @@ end
 function Player:addSkillPoint(amount)
 	skill_points = skill_points + amount
 	current_room.score = current_room.score + 250
+	self:onSkillPointPickup()
 end
 
 function Player:setAttack(attack)
