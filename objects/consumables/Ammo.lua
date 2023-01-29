@@ -60,6 +60,7 @@ end
 
 function Ammo:die()
 	current_room.player:addAmmo(self.amount)
+	current_room.player:onAmmoPickup()
 	self.dead = true
 	self.area:addGameObject(
 		'AmmoEffect',

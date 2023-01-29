@@ -78,7 +78,24 @@ function Player:new(area, x, y, opts)
 	self.flat_ammo_gain = 0
 
 	self:setStats()
+
+	-- chances
+	self.chances = {}
+	self.launch_homing_projectile_on_ammo_pickup_chance = 25
+	self.regain_hp_on_ammo_pickup_chance = 25
+
+	self:generateChances()
 end
+
+function Player:generateChances()
+	self.chances = {}
+	for k, v in pairs(self) do
+		if k:find('_chance') and type(v) == 'number' then
+			self.chances[k] = chanceList({true, math.ceil(v)}, {false, 100 - math.ceil(v)})
+		end
+	end
+end
+
 
 function Player:setStats()
 	self.max_hp = (self.max_hp + self.flat_hp)*self.hp_multiplier
@@ -89,6 +106,45 @@ function Player:setStats()
 
 	self.max_boost = (self.max_boost + self.flat_boost)*self.boost_multiplier
 	self.boost = self.max_boost
+end
+
+function Player:onAmmoPickup()
+	if self.chances.launch_homing_projectile_on_ammo_pickup_chance:next() then
+		local d = 1.2*self.w
+		self.area:addGameObject(
+			'Projectile',
+			self.x + d*math.cos(self.r),
+			self.y + d*math.sin(self.r),
+			{
+				r = self.r,
+				s = 2.5,
+				v = 250,
+				color = ammo_color,
+				homing = true
+			}
+		)
+		self.area:addGameObject(
+			'InfoText',
+			self.x,
+			self.y,
+			{
+				color = boost_color,
+				text = 'Homing Projectile!'
+			}
+		)
+	end
+	if self.chances.regain_hp_on_ammo_pickup_chance:next() then
+		self:addHp(25)
+		self.area:addGameObject(
+			'InfoText',
+			self.x,
+			self.y,
+			{
+				color = boost_color,
+				text = 'HP Regain!'
+			}
+		)
+	end
 end
 
 function Player:cycle()
