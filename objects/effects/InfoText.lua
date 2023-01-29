@@ -9,6 +9,8 @@ function InfoText:new(area, x, y, opts)
 	self.text = opts.text or 'InfoText'
 
 	self.visible = true
+	self.fade = 1
+
 
 	self.timer:after(
 		0.7,
@@ -18,24 +20,12 @@ function InfoText:new(area, x, y, opts)
 			self.timer:every(
 				0.035,
 				function ()
-					local random_characters = {
-						'!@#$%¨&*()-=+[]^~/;?><.,| ',
-						'0123456789',
-						'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWYXZ'
-					}
+					local random_characters =
+						'!@#$%¨&*()-=+[]^~/;?><.,|0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWYXZ'
 					for i, character in ipairs(self.characters) do
 						if math.random(1, 20) == 1 then
-							local char_type_index = 1
-							for j = 1, #random_characters do
-								local search_string = character
-								if j == 1 then search_string = '%'..search_string end
-								if character and random_characters[j] and random_characters[j].find and random_characters[j]:find(character) then
-									char_type_index = j
-									break
-								end
-							end
-							local r = love.math.random(1, #random_characters[char_type_index])
-							self.characters[i] = random_characters[char_type_index]:utf8sub(r, r)
+							local r = love.math.random(1, #random_characters)
+							self.characters[i] = random_characters:utf8sub(r, r)
 						else
 							self.characters[i] = character
 						end
@@ -58,6 +48,8 @@ function InfoText:new(area, x, y, opts)
 					self.visible = true
 				end
 			)
+			-- fade text out
+			self.timer:tween(0.35, self, {fade = 0}, 'in-out-cubic')
 			-- kill the effect
 			self.timer:after(
 				1.1,
@@ -102,8 +94,12 @@ function InfoText:draw()
 				width = width + self.font:getWidth(self.characters[j])
 			end
 		end
-
-		love.graphics.setColor(self.color)
+		local r,g,b = unpack(self.color)
+		local a = self.fade
+		if a < 1 then
+			a = a * random(0.5, 2)
+		end
+		love.graphics.setColor({r,g,b,a})
 		love.graphics.print(
 			self.characters[i],
 			self.x + width,
