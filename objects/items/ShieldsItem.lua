@@ -24,5 +24,5 @@ function ShieldsItem:new(area, player)
 end
 
 function ShieldsItem:draw()
-	self.player.ship:draw()
+	if self.player and self.player.ship and self.player.ship.draw then self.player.ship:draw() end
 end
